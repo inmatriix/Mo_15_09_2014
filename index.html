@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="nameApp">
+<head>
+	<meta charset="utf-8">
+    <title> Form to login  </title>
+    <script src = "angular.js"></script> <!-- paso 1 copiado de la url ppal de angularjs.org-->
+    <script src = "app.js" ></script>  <!-- paso 5 , 1o siempre va app.js pq se incluye en los demas -->
+    <script src = "formcontroller.js"></script>  <!-- paso 6 declaración de fichero .js-->
+   
+    <script>
+      // var nameApp = angular.module('nameApp', []);
+       var countryApp = angular.module('nameApp', []);
+
+       countryApp.controller('CountryCtrl', function($scope, $http){
+
+       	 $http.get('countries.json').success(function(data) {  //base de datos json de paises
+       	 	$scope.countries = data;
+       	 });
+
+       });
+
+
+       nameApp.controller('NameCtrl', function ($scope){
+        $scope.firstName='John';  //nombre local
+       	$scope.lastName='Smith';  //apellido local
+
+       	$scope.names=['Larry', 'Curly', 'Moe'];  //listado de nombres locales
+
+       	$scope.countries=[  								//listado de varias tuplas locales
+            {"name": "China", "population": 12354354},
+            {"name": "India", "population": 2345466543},
+ 			{"name": "USA", "population": 34532345}
+       	  ];
+     
+
+       $scope.addName = function(){        // funcion para añadir nombre 
+       	$scope.names.push($scope.enteredName);
+       	$scope.enteredName='';
+
+       };
+
+       $scope.removeName = function (name){ //funcion para eliminar un nombre de la lista
+         var i= $scope.names.indexOf(name);
+         $scope.names.splice(i,1);
+       };
+        
+     }); 
+   
+    </script>
+
+</head>
+
+ <body ng-controller="CountryCtrl"> <!-- ng-controller="NameCtrl"> -->
+         <!-- paso 2  identificacion del nombre y controlador a partir de aqui se crea el app.js-->
+
+    
+        Name:  <input type="text"  ng-model="firstName" /><br>
+        Surname: <input type="text"  ng-model="lastName" /><br>
+        Hello {{firstName}} {{lastName}}
+
+        <ul>
+        	<li ng-repeat="name in names">{{name}}
+        	    <a href="" ng-click="removeName(name)"> remove </a>
+        	</li>
+        </ul>
+
+        <br>
+        <form ng-submit="addName()">
+        	<input type="text" ng-model="enteredName">
+        	<input type="submit" value="add">
+        </form>
+        <br>
+        Search: <input ng-model="query" type="text"/>
+        <br>
+        <table>
+        	<tr>
+        		<th>Country</th>
+        		<th> Population</th>
+        	</tr>
+        	<tr ng-repeat="country in countries | filter:query">
+        		<td>{{country.name}} </td>
+        		<td> {{country.population}} </td>
+        	</tr>
+        </table>
+
+ </body>
+</html>
